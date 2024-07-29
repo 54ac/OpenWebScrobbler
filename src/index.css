@@ -170,6 +170,10 @@ body {
   cursor: pointer;
 }
 
+.turnstile-container {
+  max-width: 300px;
+}
+
 .w-auto {
   width: auto !important;
 }

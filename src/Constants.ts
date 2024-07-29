@@ -52,7 +52,7 @@ export const COUNT_SCROBBLES_DISABLE = 'COUNT_SCROBBLES_DISABLE';
 export const USER_LOGGED_OUT = 'USER_LOGGED_OUT';
 
 // Referral link generation
-export const getAmznLink = (artist, album) => {
+export const getAmznLink = (artist: string, album: string) => {
   if (artist === album) {
     album = '';
   }
@@ -62,3 +62,11 @@ export const getAmznLink = (artist, album) => {
     atob('JnRhZz1vcGVuc2Nyb2JibGVyLTIwJmxpbmtDb2RlPXVyMiZjYW1wPTE3ODkmY3JlYXRpdmU9OTMyNQ==')
   );
 };
+
+export const getTurnstileSiteKey = (): string => {
+  return process.env.REACT_APP_CF_TURNSTILE_SITE_KEY;
+};
+
+if (window.Cypress) {
+  window.getTurnstileSiteKey = getTurnstileSiteKey;
+}

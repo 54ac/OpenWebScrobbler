@@ -4,6 +4,7 @@ import qs from 'qs';
 import ReactGA from 'react-ga-neo';
 import { Trans } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import Turnstile from 'react-turnstile';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +16,7 @@ import { useUserData } from 'hooks/useUserData';
 import { logout } from 'utils/clients/api/methods/logout';
 import { validateLastfmToken } from 'utils/clients/api/methods/validateLastfmToken';
 
-import { LASTFM_AUTH_URL } from 'Constants';
+import { getTurnstileSiteKey, LASTFM_AUTH_URL } from 'Constants';
 
 function logoutAndTryAgain(e) {
   e.preventDefault();
@@ -34,10 +35,16 @@ export function Callback() {
   const queryClient = useQueryClient();
   const user = useUserData();
   const settings = useSettings();
+
+  const [turnstileLoading, setTurnstileLoaded] = useState(false);
+  const [turnstileError, setTurnstileError] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileReady, setTurnstileReady] = useState(false);
+
   const validation = useQuery({
     queryKey: ['lastfm', 'callback', lastfmToken],
     queryFn: () =>
-      validateLastfmToken(lastfmToken).then((data) => {
+      validateLastfmToken(lastfmToken, turnstileToken).then((data) => {
         if (data.success) {
           queryClient.invalidateQueries({
             queryKey: ['user'],
@@ -75,6 +82,12 @@ export function Callback() {
     }
   }, [lastfmToken, user, validation, settings, navigate]);
 
+  useEffect(() => {
+    if (turnstileToken) {
+      setTurnstileReady(true);
+    }
+  }, [turnstileToken]);
+
   // Show a spinner while we check if the user is already logged in
   if (!lastfmToken) {
     return (
@@ -83,6 +96,9 @@ export function Callback() {
       </div>
     );
   }
+
+  // ToDo: remove from window, used only to stub with Cypress :(
+  const turnstileSiteKey = window.getTurnstileSiteKey();
 
   // Error conditions for each block (yes, this is awful)
   const validationFailed = validation.isError || (validation.data && validation.data.success === false);
@@ -106,8 +122,23 @@ export function Callback() {
 
       <div className="row px-4">
         <div className="d-block jumbotron rounded  px-3 px-sm-4 py-3 py-sm-5 py-md-4 col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+          {/* Turnstile check */}
+          {turnstileSiteKey && (
+            <ProgressItem
+              isLoading={turnstileLoading && !turnstileToken}
+              isError={turnstileError}
+              isDone={!!turnstileToken}
+            >
+              <Trans i18nKey="verifyingHuman">Are we human? Or are we dancer 🕺🏻</Trans>
+            </ProgressItem>
+          )}
+
           {/* Last.fm auth */}
-          <ProgressItem isLoading={!validation.isSuccess} isError={validationFailed} isDone={validation.data?.success}>
+          <ProgressItem
+            isLoading={turnstileToken && !validation.isSuccess}
+            isError={validationFailed}
+            isDone={validation.data?.success}
+          >
             <Trans i18nKey="finishingValidation">Validating token with Last.fm</Trans>
           </ProgressItem>
 
@@ -128,6 +159,25 @@ export function Callback() {
           >
             <Trans i18nKey="fetchingUserSettings">Retrieving your preferences</Trans>
           </ProgressItem>
+
+          {/* Turnstile */}
+          {turnstileSiteKey && !turnstileToken && (
+            <Turnstile
+              className="turnstile-container my-3 mx-auto"
+              sitekey={turnstileSiteKey}
+              theme="dark"
+              data-cy="turnstile-container"
+              fixedSize={true}
+              onLoad={() => setTurnstileLoaded(true)}
+              onError={() => setTurnstileError(true)}
+              onUnsupported={() => setTurnstileError(true)}
+              onVerify={setTurnstileToken}
+              retry="never"
+              // onExpire={logoutAndTryAgain}
+              action="demo"
+              cData="customerdata"
+            />
+          )}
 
           {/* Error block */}
           {(validationFailed || userFailed || settingsFailed) && (

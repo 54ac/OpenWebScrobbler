@@ -242,6 +242,31 @@ describe('Authentication', () => {
     });
   });
 
+  describe('Turnstile', () => {
+    beforeEach(() => {
+      cy.intercept('GET', '/api/v2/user.php', { fixture: 'api/v2/user/visitor.json' }).as('userData');
+      cy.intercept('/api/v2/callback.php', { fixture: 'api/v2/callback/success.json' }).as('callback');
+    });
+
+    it('skips the turnstile if not configured', () => {
+      cy.visit('/?token=s3CM7rzuQKurE0U_Enq_3RHTYrm7XyyT');
+      cy.window().then((win) => {
+        cy.stub(win, 'getTurnstileSiteKey').returns(null);
+        cy.get('[data-cy="ProgressItem"]').should('have.length', 3);
+      });
+    });
+
+    it.only('shows the human verification item if configured', () => {
+      cy.visit('/?token=s3CM7rzuQKurE0U_Enq_3RHTYrm7XyyT');
+      cy.window().then((win) => {
+        cy.stub(win, 'getTurnstileSiteKey').returns('3x00000000000000000000FF');
+        cy.get('[data-cy="ProgressItem"]').contains('human').should('exist');
+      });
+    });
+
+    it('checks if the user is human', () => {});
+  });
+
   describe('Already logged in user', () => {
     beforeEach(() => {
       cy.intercept('GET', '/api/v2/user.php', { fixture: 'api/v2/user/authenticated.json' }).as('userData');

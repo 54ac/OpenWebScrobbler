@@ -1,10 +1,11 @@
-import { Suspense, useContext, useEffect, useState } from 'react';
+import { Suspense, useContext, useEffect, useMemo, useState } from 'react';
 import addDays from 'date-fns/addDays';
 import addSeconds from 'date-fns/addSeconds';
 import ReactGA from 'react-ga-neo';
 import { Trans } from 'react-i18next';
 import { lazyWithPreload } from 'react-lazy-with-preload';
 import { useDispatch } from 'react-redux';
+import Turnstile from 'react-turnstile';
 
 import { Button, ButtonGroup, Form, FormGroup, Input, Label } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,7 +18,7 @@ import { enqueueScrobble } from 'store/actions/scrobbleActions';
 
 import { ScrobbleCloneContext } from './ScrobbleSong';
 
-import { DEFAULT_SONG_DURATION } from 'Constants';
+import { DEFAULT_SONG_DURATION, getTurnstileSiteKey } from 'Constants';
 
 import './SongForm.css';
 
@@ -74,6 +75,9 @@ export function SongForm() {
   const dispatch = useDispatch();
   const { isLoading: settingsLoading, settings } = useSettings();
   const { setCloneFn } = useContext(ScrobbleCloneContext);
+  const turnstileSiteKey = useMemo(() => getTurnstileSiteKey(), []);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const captchaPending = turnstileSiteKey && !turnstileToken;
 
   // ToDo: refactor to use context or something more practical
   useEffect(() => {
@@ -483,10 +487,26 @@ export function SongForm() {
         color="success"
         onClick={scrobbleSong}
         data-cy="scrobble-button"
-        disabled={!formIsValid || settingsLoading}
+        disabled={!formIsValid || settingsLoading || captchaPending}
       >
         <Trans i18nKey="scrobble">Scrobble</Trans>!
       </Button>
+
+      <Turnstile
+        className="turnstile-container my-3 mx-auto"
+        sitekey={turnstileSiteKey}
+        theme="dark"
+        data-cy="turnstile-container"
+        fixedSize={true}
+        // onLoad={() => setTurnstileLoaded(true)}
+        // onError={() => setTurnstileError(true)}
+        // onUnsupported={() => setTurnstileError(true)}
+        onVerify={setTurnstileToken}
+        retry="never"
+        refreshExpired="auto"
+        onExpire={() => setTurnstileToken('')}
+        action="scrobble-song"
+      />
 
       {!settings?.hasActiveSubscription && (
         <div className="donation-cta mt-2">
