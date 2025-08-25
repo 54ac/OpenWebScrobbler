@@ -29,6 +29,7 @@ export const languageList: i18nLanguage[] = [
   { code: 'it', name: 'Italiano' },
   { code: 'lt', name: 'Lietuvių' }, // Lithuanian
   { code: 'nl', name: 'Nederlands' }, // Dutch
+  { code: 'nb', name: 'Norsk bokmål' }, // Norwegian Bokmål
   { code: 'pl', name: 'Polski' }, // Polish
   { code: 'pt', name: 'Português' },
   { code: 'pt-BR', name: 'Português (BR)' },
@@ -55,6 +56,8 @@ export const fallbackLng = {
   'hr-HR': ['hr'],
   'it-CH': ['it'],
   'lt-LT': ['lt'],
+  'nb-NO': ['nb'],
+  'nb-SJ': ['nb'],
   'pt-BR': ['pt-BR'],
   'pt-PT': ['pt'],
   'fr-FR': ['fr'],
