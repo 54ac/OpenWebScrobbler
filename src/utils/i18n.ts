@@ -16,7 +16,8 @@ export const languageList: i18nLanguage[] = [
   { code: 'ar', name: 'العربية', rtl: true }, // Arabic
   { code: 'bg', name: 'Български' }, // Bulgarian
   { code: 'ca', name: 'Català' }, // Catalan
-  // { code: 'zh-Hans', name: '中文' }, // Chinese (simplified)
+  { code: 'zh', name: '中文（简体）' }, // Chinese (simplified)
+  { code: 'zh-TW', name: '中文（繁體）' }, // Chinese (traditional, Taiwan)
   { code: 'cs', name: 'Čeština' }, // Czech
   { code: 'da', name: 'Dansk' }, // Danish
   { code: 'de', name: 'Deutsch' }, // German
@@ -59,6 +60,11 @@ export const fallbackLng = {
   'fr-FR': ['fr'],
   'uk-UA': ['uk'],
   'sv-SE': ['sv'],
+  zh: ['zh-Hans'],
+  'zh-CN': ['zh-Hans'],
+  'zh-SG': ['zh-Hans'],
+  'zh-TW': ['zh-TW'],
+  'zh-HK': ['zh-TW'],
   default: ['en'],
 };
 
