@@ -12,8 +12,6 @@ import {
   UncontrolledDropdown,
 } from 'reactstrap';
 
-import styles from './SearchForm.module.scss';
-
 import type { ChangeEvent, ReactNode } from 'react';
 
 // ToDo: check and fix any double-renders on change/validation
