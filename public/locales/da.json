@@ -25,7 +25,6 @@
   "yourHistory": "Din historik",
   "scrobbleManually": "Scrobbl manuelt",
   "scrobbleFromOtherUser": "Scrobbl fra anden bruger",
-  "scrobbleFromSetlist": "Scrobbl fra setlist.fm",
   "otherUser": "Bruger",
   "or": "eller",
   "refresh": "Genindlæs",
@@ -164,7 +163,13 @@
   "general": "Generelt",
   "learnMore": "Lær mere",
   "connected": "Forbundet",
-  "filter": "Filter",
-  "autoFillAlbum": "Autocomplete using Last.fm",
-  "autoFillAlbumInvalidForm": "Enter artist and track to autocomplete"
+  "filter": "Filtrér",
+  "autoFillAlbum": "Autoudfyld gennem Last.fm",
+  "autoFillAlbumInvalidForm": "Indtast kunstner og titel for at autoudfylde",
+  "scrobbleSetlist": "Scrobbl sætliste",
+  "noSetlistsFound": "Ingen sætlister fundet for <1>{{searchParam}}</1>",
+  "emptySetlist": "Denne sætliste lader til at være tom.",
+  "setlist": "Setlist",
+  "searchSetlistPrompt": "Søg ud fra kunstnernavn eller indsæt et setlist.fm-link",
+  "scrobbleFromSetlist": "Scrobbl fra setlist.fm"
 }

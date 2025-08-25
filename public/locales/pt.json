@@ -25,7 +25,6 @@
   "yourHistory": "Teu histórico",
   "scrobbleManually": "Scrobblar manualmente",
   "scrobbleFromOtherUser": "Scrobblar de outro utilizador",
-  "scrobbleFromSetlist": "Scrobblar de setlist.fm",
   "otherUser": "Utilizador",
   "or": "ou",
   "refresh": "Atualizar",
@@ -164,5 +163,13 @@
   "general": "Geral",
   "learnMore": "Saiba mais",
   "connected": "Conectado",
-  "filter": "Filtrar"
+  "filter": "Filtrar",
+  "autoFillAlbum": "Autocompletar usando Last.fm",
+  "autoFillAlbumInvalidForm": "Digite artista e faixa para autocompletar",
+  "scrobbleSetlist": "Scrobblar setlist",
+  "noSetlistsFound": "Nenhum setlist encontrado para <1>{{searchParam}}</1>",
+  "emptySetlist": "Esse setlist parece estar vazio.",
+  "setlist": "Setlist",
+  "searchSetlistPrompt": "Pesquisar pelo nome do artista ou colar um link do setlist.fm",
+  "scrobbleFromSetlist": "Scrobblar de setlist.fm"
 }

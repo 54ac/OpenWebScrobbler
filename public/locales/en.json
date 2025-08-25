@@ -170,5 +170,6 @@
   "noSetlistsFound": "No setlists found for <1>{{searchParam}}</1>",
   "emptySetlist": "This setlist seems to be empty.",
   "setlist": "Setlist",
-  "searchSetlistPrompt": "Search by artist name or paste a setlist.fm link"
+  "searchSetlistPrompt": "Search by artist name or paste a setlist.fm link",
+  "scrobbleFromSetlist": "Scrobble from setlist.fm"
 }
