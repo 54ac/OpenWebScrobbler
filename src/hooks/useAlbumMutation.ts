@@ -33,6 +33,7 @@ export function useAlbumMutation(queryKey: QueryKey) {
     onSuccess: (updatedAlbum: AlbumWithTracks) => {
       queryClient.setQueryData<AlbumWithTracks>(queryKey, (oldData) => __updateAlbumWithTracks(oldData, updatedAlbum));
     },
+    throwOnError: true,
   });
 
   return mutate;
