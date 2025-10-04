@@ -40,7 +40,7 @@ export function tracksTransformer(
     })
     .map((track) => {
       const transformedTrack = {
-        artist: sanitizeArtistName((track.artists?.[0]?.name ?? options?.artist) || ''),
+        artist: sanitizeArtistName(track.artists?.[0]?.name || options?.artist || ''),
         title: track.title,
         album,
         albumArtist,
