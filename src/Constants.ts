@@ -17,6 +17,7 @@ export const DEFAULT_SONG_DURATION = 3 * 60; // ToDo: use this value when skippi
 // Live music is unpredictable, but usually the band takes a few seconds to breathe / introduce song.
 // Adding some leeway to encapsulate this, but it will never be perfect.
 export const DEFAULT_CONCERT_INTERVAL_DURATION = 2 * 60;
+export const MAX_SIMULTANEOUS_ALERTS = 2;
 
 // ToDo: improve this
 export type Provider = 'lastfm' | 'discogs' | 'spotify' | 'setlistfm';

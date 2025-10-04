@@ -6,6 +6,8 @@ import { clearAlerts } from 'store/actions/alertActions';
 
 import AlertItem from './partials/AlertItem';
 
+import { MAX_SIMULTANEOUS_ALERTS } from 'Constants';
+
 import type { RootState } from 'store';
 
 export default function AlertZone() {
@@ -25,9 +27,14 @@ export default function AlertZone() {
   return (
     <div className="container">
       <div className="AlertZone mt-3">
-        {alerts.map((data) => (
+        {alerts.slice(0, MAX_SIMULTANEOUS_ALERTS).map((data) => (
           <AlertItem key={data.id} {...data} />
         ))}
+        {alerts.length > MAX_SIMULTANEOUS_ALERTS && (
+          <div className="text-end text-small text-muted mb-2">
+            {MAX_SIMULTANEOUS_ALERTS} / {alerts.length}
+          </div>
+        )}
       </div>
     </div>
   );
