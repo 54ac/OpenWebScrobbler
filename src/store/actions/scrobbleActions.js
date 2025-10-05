@@ -12,7 +12,7 @@ import {
   SCROBBLING_DEBOUNCE_PERIOD,
 } from 'Constants';
 
-export function enqueueScrobble(dispatch) {
+export function enqueueScrobble(dispatch, getCaptchaToken) {
   return (scrobbles = []) => {
     // Normalize and add metadata
     scrobbles = scrobbles.map((scrobble, i) => {
@@ -61,7 +61,7 @@ export function enqueueScrobble(dispatch) {
           time: SCROBBLING_DEBOUNCE_PERIOD,
         },
       },
-      payload: { dispatch }, // FIXME: this is an anti-pattern
+      payload: { getCaptchaToken, dispatch }, // FIXME: this is an anti-pattern
       /* The thing here is: I need to scrobble *all* queued tracks, but I only want to
        * do so once every SCROBBLING_DEBOUNCE_PERIOD. This is an ugly -but effective-
        * way to trigger on each enqueue call and fire just once.

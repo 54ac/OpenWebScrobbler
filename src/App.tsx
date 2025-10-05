@@ -12,6 +12,7 @@ import { useRegisterSW } from 'virtual:pwa-register/react';
 
 import AlertZone from 'components/AlertZone';
 import AnalyticsListener from 'components/AnalyticsListener';
+import { CaptchaContext } from 'components/Captcha/CaptchaContext';
 import Footer from 'components/Footer';
 import Navigation from 'components/Navigation';
 import { SettingsModalContext } from 'components/SettingsModal/SettingsModalContext';
@@ -37,6 +38,7 @@ function App() {
   const { ready: i18nReady } = useTranslation();
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState('');
 
   useEffect(() => {
     if (growthbook && growthbook.ready === false) {
@@ -104,7 +106,9 @@ function App() {
 
         <AlertZone />
         <main className="container flex-wrap flex-grow-1">
-          <Routes />
+          <CaptchaContext.Provider value={{ captchaToken, setCaptchaToken }}>
+            <Routes />
+          </CaptchaContext.Provider>
         </main>
         <Footer />
       </div>

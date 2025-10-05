@@ -121,22 +121,20 @@ const scrobbleReducer = (state = initialState, action) => {
 
     case FLUSH_QUEUE: {
       const scrobbleUUID = shortid.generate();
-      const { dispatch } = action.payload; // sorry :(
-
+      const { getCaptchaToken, dispatch } = action.payload; // sorry :(
       const queuedScrobbles = state.list.filter(({ status }) => status === 'queued');
       const scrobbles = queuedScrobbles.splice(-MAX_SCROBBLES_PER_REQUEST, MAX_SCROBBLES_PER_REQUEST);
       const scrobbledIds = scrobbles.map(({ id }) => id);
 
       if (scrobbles.length > 0) {
         // Dispatch axios promise
-        setTimeout(
-          () =>
-            dispatch({
-              type: SCROBBLE,
-              payload: scrobble(scrobbles, scrobbleUUID),
-            }),
-          0
-        );
+        setTimeout(() => {
+          const validationToken = getCaptchaToken();
+          dispatch({
+            type: SCROBBLE,
+            payload: scrobble(scrobbles, scrobbleUUID, validationToken),
+          });
+        }, 0);
       }
 
       // Flush any pending scrobbles if there were more than MAX_SCROBBLES_PER_REQUEST

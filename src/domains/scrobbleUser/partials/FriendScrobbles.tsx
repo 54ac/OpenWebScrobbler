@@ -3,6 +3,7 @@ import { Trans } from 'react-i18next';
 
 import { FormGroup, Input, Label } from 'reactstrap';
 
+import { TurnstileWrapper } from 'components/Captcha';
 import ScrobbleList from 'components/ScrobbleList';
 import UserCard from 'components/UserCard';
 import { useSettings } from 'hooks/useSettings';
@@ -71,6 +72,7 @@ export default function FriendScrobbles({
         className={`ScrobbleList-container with-gradient${loading ? ' opacity-50' : ''}`}
         data-cy="FriendScrobbles-ScrobbleList"
       >
+        <TurnstileWrapper action="scrobble-user" className="mb-2" />
         <ScrobbleList compact noMenu analyticsEventForScrobbles="Scrobble from user" scrobbles={scrobbles}>
           <div className="mt-3 text-center">
             <Trans i18nKey="noSongsScrobbled">This user hasn&apos;t scrobbled anything yet!</Trans>

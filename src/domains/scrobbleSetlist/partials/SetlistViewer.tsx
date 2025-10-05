@@ -6,7 +6,9 @@ import { useDispatch } from 'react-redux';
 
 import { Button } from 'reactstrap';
 
+import { TurnstileWrapper } from 'components/Captcha';
 import ScrobbleList from 'components/ScrobbleList';
+import { useCaptcha } from 'hooks/useCaptcha';
 import { enqueueScrobble } from 'store/actions/scrobbleActions';
 
 import { EmptySetlistMessage } from './EmptySetlistMessage';
@@ -27,6 +29,7 @@ export default function SetlistViewer({ setlist }: { setlist: Setlist | null }) 
     return setlist.date && setlist.date > twoWeeksAgo ? setlist.date : new Date();
   });
   const [hasBeenScrobbled, setSetlistScrobbled] = useState(false);
+  const { getCaptchaToken } = useCaptcha();
   const setlistIsValid = setlist.trackCount > 0;
 
   const tracks = setlist.tracks || [];
@@ -65,7 +68,7 @@ export default function SetlistViewer({ setlist }: { setlist: Setlist | null }) 
         return result;
       }, []);
 
-    enqueueScrobble(dispatch)(tracksToScrobble);
+    enqueueScrobble(dispatch, getCaptchaToken)(tracksToScrobble);
     setSetlistScrobbled(true);
     setSelectedTracks(new Set());
   };
@@ -97,6 +100,8 @@ export default function SetlistViewer({ setlist }: { setlist: Setlist | null }) 
           </Button>
         </div>
       </div>
+
+      <TurnstileWrapper action="scrobble-setlist" className="mb-2" />
 
       <ScrobbleList
         compact={true}

@@ -10,7 +10,9 @@ import { Alert, Button, FormGroup, Input, Label } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
+import { TurnstileWrapper } from 'components/Captcha';
 import ScrobbleList from 'components/ScrobbleList';
+import { useCaptcha } from 'hooks/useCaptcha';
 import { enqueueScrobble } from 'store/actions/scrobbleActions';
 
 import { cleanTitleWithPattern, CleanupPatternContext } from '../CleanupContext';
@@ -41,6 +43,7 @@ export default function Tracklist({ albumInfo, tracks = [] }: { albumInfo: Album
   const [selectedTracks, setSelectedTracks] = useState<Set<TrackID>>(new Set());
   const [lastSelectedTrack, setLastSelectedTrack] = useState(tracks[0]?.id);
   const { cleanupPattern } = useContext(CleanupPatternContext);
+  const { getCaptchaToken } = useCaptcha();
 
   const albumHasTracks = tracks?.length > 0;
   const hasAlbumInfo = !!albumInfo && Object.keys(albumInfo).length > 0;
@@ -130,7 +133,7 @@ export default function Tracklist({ albumInfo, tracks = [] }: { albumInfo: Album
       }, [])
       .filter(({ title }) => title !== '');
 
-    enqueueScrobble(dispatch)(tracksToScrobble);
+    enqueueScrobble(dispatch, getCaptchaToken)(tracksToScrobble);
     setCanScrobble(selectedTracks.size > 0);
     setSelectedTracks(new Set());
     setLastSelectedTrack(tracks[0].id);
@@ -183,6 +186,7 @@ export default function Tracklist({ albumInfo, tracks = [] }: { albumInfo: Album
           )}
         </AlbumMetadata>
       )}
+
       {useCustomTimestamp && (
         <Suspense
           fallback={
@@ -223,6 +227,7 @@ export default function Tracklist({ albumInfo, tracks = [] }: { albumInfo: Album
               <Trans i18nKey={selectedTracks.size > 0 ? 'scrobbleSelected' : 'scrobbleAlbum'}>Scrobble it</Trans>
             </Button>
           </div>
+          <TurnstileWrapper action="scrobble-album" className="mt-1 mb-3" />
         </div>
       )}
 

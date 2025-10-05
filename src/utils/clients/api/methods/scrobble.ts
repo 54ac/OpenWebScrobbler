@@ -4,27 +4,15 @@ import { openscrobblerAPI } from '../apiClient';
 
 import type { Scrobble } from 'utils/types/scrobble';
 
-// Helper function to convert object with arrays to URLSearchParams
-// (this will be removed after upgrading the endpoint)
-function formEncode(data): URLSearchParams {
-  const params = new URLSearchParams();
-  for (const key in data) {
-    if (Array.isArray(data[key])) {
-      data[key].forEach((item: any) => params.append(`${key}[]`, item.toString()));
-    } else {
-      params.append(key, data[key].toString());
+export function scrobble(scrobbles: Scrobble[], scrobbleUUID: string, validationToken: string) {
+  return openscrobblerAPI.post(
+    '/scrobble.php',
+    { ...prepareScrobbles(scrobbles), validationToken },
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        scrobbleUUID,
+      },
     }
-  }
-  return params;
-}
-
-export function scrobble(scrobbles: Scrobble[], scrobbleUUID: string) {
-  const formEncodedPayload = formEncode(prepareScrobbles(scrobbles));
-
-  return openscrobblerAPI.post('/scrobble.php', formEncodedPayload, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      scrobbleUUID,
-    },
-  });
+  );
 }

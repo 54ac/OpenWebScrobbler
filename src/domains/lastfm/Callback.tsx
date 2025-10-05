@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useFeatureIsOn } from '@growthbook/growthbook-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import qs from 'qs';
 import ReactGA from 'react-ga-neo';
@@ -36,10 +37,14 @@ export function Callback() {
   const user = useUserData();
   const settings = useSettings();
 
+  // ToDo: remove from window, used only to stub with Cypress :(
+  const turnstileSiteKey = (window.getTurnstileSiteKey || getTurnstileSiteKey)();
+
   const [turnstileLoading, setTurnstileLoaded] = useState(false);
   const [turnstileError, setTurnstileError] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
-  const [turnstileReady, setTurnstileReady] = useState(false);
+  const bypassTurnstile = useFeatureIsOn('bypass-turnstile');
+  const turnstileReady = bypassTurnstile || !turnstileSiteKey || !!turnstileToken;
 
   const validation = useQuery({
     queryKey: ['lastfm', 'callback', lastfmToken],
@@ -53,7 +58,7 @@ export function Callback() {
         return data;
       }),
     staleTime: Infinity,
-    enabled: !!lastfmToken,
+    enabled: !!lastfmToken && turnstileReady,
   });
 
   useEffect(() => {
@@ -82,12 +87,6 @@ export function Callback() {
     }
   }, [lastfmToken, user, validation, settings, navigate]);
 
-  useEffect(() => {
-    if (turnstileToken) {
-      setTurnstileReady(true);
-    }
-  }, [turnstileToken]);
-
   // Show a spinner while we check if the user is already logged in
   if (!lastfmToken) {
     return (
@@ -96,9 +95,6 @@ export function Callback() {
       </div>
     );
   }
-
-  // ToDo: remove from window, used only to stub with Cypress :(
-  const turnstileSiteKey = window.getTurnstileSiteKey();
 
   // Error conditions for each block (yes, this is awful)
   const validationFailed = validation.isError || (validation.data && validation.data.success === false);
@@ -121,7 +117,7 @@ export function Callback() {
       </h3>
 
       <div className="row px-4">
-        <div className="d-block jumbotron rounded  px-3 px-sm-4 py-3 py-sm-5 py-md-4 col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+        <div className="d-block jumbotron rounded px-3 px-sm-4 py-3 py-sm-5 py-md-4 col-12 offset-0 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
           {/* Turnstile check */}
           {turnstileSiteKey && (
             <ProgressItem
@@ -160,25 +156,6 @@ export function Callback() {
             <Trans i18nKey="fetchingUserSettings">Retrieving your preferences</Trans>
           </ProgressItem>
 
-          {/* Turnstile */}
-          {turnstileSiteKey && !turnstileToken && (
-            <Turnstile
-              className="turnstile-container my-3 mx-auto"
-              sitekey={turnstileSiteKey}
-              theme="dark"
-              data-cy="turnstile-container"
-              fixedSize={true}
-              onLoad={() => setTurnstileLoaded(true)}
-              onError={() => setTurnstileError(true)}
-              onUnsupported={() => setTurnstileError(true)}
-              onVerify={setTurnstileToken}
-              retry="never"
-              // onExpire={logoutAndTryAgain}
-              action="demo"
-              cData="customerdata"
-            />
-          )}
-
           {/* Error block */}
           {(validationFailed || userFailed || settingsFailed) && (
             <div className="mt-3" data-cy="Callback-issues-block">
@@ -215,6 +192,27 @@ export function Callback() {
             </div>
           )}
         </div>
+
+        {/* Turnstile */}
+        {turnstileSiteKey && !bypassTurnstile && (
+          <div className="my-3 text-center">
+            <Turnstile
+              style={{ maxWidth: '300px' }}
+              className="mx-auto"
+              sitekey={turnstileSiteKey}
+              theme="dark"
+              data-cy="turnstile-container"
+              onLoad={() => setTurnstileLoaded(true)}
+              onError={() => setTurnstileError(true)}
+              onUnsupported={() => setTurnstileError(true)}
+              onVerify={setTurnstileToken}
+              retry="never"
+              // onExpire={logoutAndTryAgain}
+              action="demo"
+              cData="customerdata"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

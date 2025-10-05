@@ -19,6 +19,9 @@ const config: TweaksConfig = {
         { name: 'Debug', value: false, options: { reload: true } },
       ],
     },
+    Turnstile: {
+      tweaks: [{ name: 'Visible', value: true, options: { reload: true } }],
+    },
     Analytics: { tweaks: [{ name: 'Debug', value: false }] },
     i18n: { tweaks: [{ name: 'Debug', value: false, options: { reload: true } }] },
     'React Query': {

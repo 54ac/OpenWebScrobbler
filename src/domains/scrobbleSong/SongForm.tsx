@@ -1,27 +1,28 @@
-import { Suspense, useContext, useEffect, useMemo, useState } from 'react';
+import { Suspense, useContext, useEffect, useState } from 'react';
 import addDays from 'date-fns/addDays';
 import addSeconds from 'date-fns/addSeconds';
 import ReactGA from 'react-ga-neo';
 import { Trans } from 'react-i18next';
 import { lazyWithPreload } from 'react-lazy-with-preload';
 import { useDispatch } from 'react-redux';
-import Turnstile from 'react-turnstile';
 
 import { Button, ButtonGroup, Form, FormGroup, Input, Label } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLightbulb } from '@fortawesome/free-regular-svg-icons';
 import { faExchangeAlt, faHeart, faThumbtack, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 
+import { useCaptcha } from 'hooks/useCaptcha';
 import { useSettings } from 'hooks/useSettings';
 import { createAlert, dismissAlert } from 'store/actions/alertActions';
 import { enqueueScrobble } from 'store/actions/scrobbleActions';
 
 import { ScrobbleCloneContext } from './ScrobbleSong';
 
-import { DEFAULT_SONG_DURATION, getTurnstileSiteKey } from 'Constants';
+import { DEFAULT_SONG_DURATION } from 'Constants';
 
 import './SongForm.css';
 
+import { TurnstileWrapper } from 'components/Captcha';
 import { trackGetInfo } from 'utils/clients/lastfm/methods/trackGetInfo';
 import { splitArtistTitleFromText } from 'utils/string';
 
@@ -75,9 +76,7 @@ export function SongForm() {
   const dispatch = useDispatch();
   const { isLoading: settingsLoading, settings } = useSettings();
   const { setCloneFn } = useContext(ScrobbleCloneContext);
-  const turnstileSiteKey = useMemo(() => getTurnstileSiteKey(), []);
-  const [turnstileToken, setTurnstileToken] = useState('');
-  const captchaPending = turnstileSiteKey && !turnstileToken;
+  const { getCaptchaToken } = useCaptcha();
 
   // ToDo: refactor to use context or something more practical
   useEffect(() => {
@@ -194,7 +193,10 @@ export function SongForm() {
   };
 
   const scrobbleSong = () => {
-    enqueueScrobble(dispatch)([
+    enqueueScrobble(
+      dispatch,
+      getCaptchaToken
+    )([
       {
         artist,
         title,
@@ -481,32 +483,18 @@ export function SongForm() {
         </div>
       </FormGroup>
 
+      <TurnstileWrapper action="scrobble-song" className="mb-2 mx-auto" />
+
       <Button
         className="scrobble-button mt-2"
         tabIndex={4}
         color="success"
         onClick={scrobbleSong}
         data-cy="scrobble-button"
-        disabled={!formIsValid || settingsLoading || captchaPending}
+        disabled={!formIsValid || settingsLoading}
       >
         <Trans i18nKey="scrobble">Scrobble</Trans>!
       </Button>
-
-      <Turnstile
-        className="turnstile-container my-3 mx-auto"
-        sitekey={turnstileSiteKey}
-        theme="dark"
-        data-cy="turnstile-container"
-        fixedSize={true}
-        // onLoad={() => setTurnstileLoaded(true)}
-        // onError={() => setTurnstileError(true)}
-        // onUnsupported={() => setTurnstileError(true)}
-        onVerify={setTurnstileToken}
-        retry="never"
-        refreshExpired="auto"
-        onExpire={() => setTurnstileToken('')}
-        action="scrobble-song"
-      />
 
       {!settings?.hasActiveSubscription && (
         <div className="donation-cta mt-2">
