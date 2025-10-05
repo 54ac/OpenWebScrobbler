@@ -146,17 +146,17 @@ export function interceptAxios(dispatch) {
             });
             break;
           case 401:
-            ReactGA.exception({
-              description: 'Invalid session key',
-              fatal: true,
-            });
-            logOut(dispatch)({
-              type: 'warning',
-              message: 'loginAgain',
-              persistent: true,
-              showErrorNumber: true,
-              errorNumber: 401,
-            });
+            // ReactGA.exception({
+            //   description: 'Invalid session key',
+            //   fatal: true,
+            // });
+            // logOut(dispatch)({
+            //   type: 'warning',
+            //   message: 'loginAgain',
+            //   persistent: true,
+            //   showErrorNumber: true,
+            //   errorNumber: 401,
+            // });
             break;
           default:
             break;
