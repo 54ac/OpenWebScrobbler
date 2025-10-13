@@ -215,8 +215,16 @@ const scrobbleReducer = (state = initialState, action) => {
       trackUUID = action.payload.config.params._uuid;
       if (action.payload?.data?.track?.album || action.payload?.data?.album) {
         albumData = action.payload.data.album || action.payload.data.track.album;
+
         if (albumData.image) {
-          const cover = albumData.image[1]['#text'];
+          const cover =
+            albumData.image.length < 4
+              ? { sm: albumData.image[0]['#text'] }
+              : {
+                  sm: albumData.image[2]['#text'],
+                  lg: albumData.image?.[3]['#text'],
+                };
+
           return {
             ...state,
             list: state.list.map((item) => {
@@ -226,7 +234,7 @@ const scrobbleReducer = (state = initialState, action) => {
                 return {
                   ...item,
                   cover,
-                };
+                } as Scrobble;
               }
             }),
           };
