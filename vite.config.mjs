@@ -93,7 +93,6 @@ const viteConfig = ({ mode }) =>
       }),
       sentryVitePlugin({
         disable: process.env.NODE_ENV !== 'production',
-        telemetry: false,
         bundleSizeOptimizations: {
           excludeDebugStatements: true,
           excludeReplayIframe: true,

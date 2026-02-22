@@ -1,13 +1,5 @@
-# Only build/, assets/db/, and docker/app/ are needed
-node_modules/
-src/
-cypress/
-.git/
-.github/
-*.md
-*.log
-.env*
-tsconfig*.json
-vite.config.*
-package*.json
-yarn.lock
+*
+
+!build
+!assets/db
+!docker

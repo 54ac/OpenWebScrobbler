@@ -106,6 +106,7 @@
     "start:server": "vite --port 3000",
     "start:services": "docker-compose up",
     "build": "yarn typecheck && vite build",
+    "build:docker": "yarn build && docker compose build app",
     "prettier": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
     "prettier:fix": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint src cypress --ext .js,.jsx,.ts,.tsx",
