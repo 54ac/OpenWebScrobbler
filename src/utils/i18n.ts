@@ -25,7 +25,9 @@ export const languageList: i18nLanguage[] = [
   { code: 'en', name: 'English' },
   { code: 'es', name: 'Español' }, // Spanish
   { code: 'fr', name: 'Français' }, // French
+  { code: 'gl', name: 'Galego' }, // Galician
   { code: 'hr', name: 'Hrvatski' }, // Croatian
+  { code: 'hu', name: 'Magyar' }, // Hungarian
   { code: 'it', name: 'Italiano' },
   { code: 'lt', name: 'Lietuvių' }, // Lithuanian
   { code: 'nl', name: 'Nederlands' }, // Dutch
@@ -33,6 +35,7 @@ export const languageList: i18nLanguage[] = [
   { code: 'pl', name: 'Polski' }, // Polish
   { code: 'pt', name: 'Português' },
   { code: 'pt-BR', name: 'Português (BR)' },
+  { code: 'ro', name: 'Română' }, // Romanian
   { code: 'sr', name: 'Српски' }, // Serbian
   { code: 'sv', name: 'Svenska' }, // Swedish
   { code: 'ru', name: 'Русский' }, // Russian
@@ -54,13 +57,16 @@ export const fallbackLng = {
   'es-AR': ['es'],
   'es-ES': ['es'],
   'hr-HR': ['hr'],
+  'hu-HU': ['hu'],
   'it-CH': ['it'],
   'lt-LT': ['lt'],
   'nb-NO': ['nb'],
   'nb-SJ': ['nb'],
   'pt-BR': ['pt-BR'],
   'pt-PT': ['pt'],
+  'ro-RO': ['ro'],
   'fr-FR': ['fr'],
+  'gl-ES': ['gl'],
   'uk-UA': ['uk'],
   'sv-SE': ['sv'],
   zh: ['zh-Hans'],
