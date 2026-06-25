@@ -15,4 +15,12 @@ if [ -d "$MIGRATIONS_DIR" ]; then
     sh /db/migrate.sh "$DB_PATH" "$MIGRATIONS_DIR"
 fi
 
+if [ "$1" = "start" ]; then
+    echo "Starting PHP-FPM and Nginx..."
+    php-fpm &
+    nginx -g "daemon off;" &
+    wait -n
+    exit $?
+fi
+
 exec "$@"

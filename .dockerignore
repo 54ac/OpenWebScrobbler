@@ -3,3 +3,4 @@
 !build
 !assets/db
 !docker
+build/**/*.map

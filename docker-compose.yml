@@ -1,6 +1,7 @@
 services:
   api:
     image: php:7-apache
+    profiles: ['dev']
     ports:
       - '3274:80'
     env_file:
@@ -11,6 +12,7 @@ services:
       - database:/var/www/html/database
   sqlite-web:
     image: coleifer/sqlite-web
+    profiles: ['dev']
     ports:
       - '8080:8080'
     volumes:
@@ -21,6 +23,9 @@ services:
     build:
       context: .
       dockerfile: docker/app/Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
       tags:
         - 54ac/openwebscrobbler:php7
         - 54ac/openwebscrobbler:latest

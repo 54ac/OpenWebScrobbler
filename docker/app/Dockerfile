@@ -1,23 +1,22 @@
-# Serves pre-built React frontend and PHP API from the same process
-FROM php:7-apache
+FROM php:7-fpm-alpine
 
-# sqlite3 CLI for migration scripts; enable mod_rewrite for SPA routing and headers for cache control
-RUN apt-get update && apt-get install -y --no-install-recommends sqlite3 \
-    && rm -rf /var/lib/apt/lists/* \
+RUN apk add --no-cache sqlite nginx \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && docker-php-ext-install opcache \
     && docker-php-ext-enable opcache \
-    && a2enmod rewrite headers \
+    && apk del .build-deps \
     && echo 'opcache.validate_timestamps=0' > /usr/local/etc/php/conf.d/opcache-prod.ini
 
-COPY docker/app/apache.conf /etc/apache2/sites-available/000-default.conf
-COPY docker/app/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY docker/app/nginx.conf /etc/nginx/nginx.conf
+
+COPY --chmod=755 docker/app/entrypoint.sh /entrypoint.sh
 
 COPY assets/db/ /db/
 COPY build/ /var/www/html/
-RUN mkdir -p /var/www/html/database
-
-EXPOSE 80
+RUN mkdir -p /var/www/html/database \
+    && chown -R www-data:www-data /var/www/html/database
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["apache2-foreground"]
+CMD ["start"]
+
 
